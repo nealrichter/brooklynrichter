@@ -65,8 +65,9 @@
     .mobile-header { display: none; }
 
     @media (max-width: 640px) {
+      .layout { flex-direction: column; }
       .sidebar { display: none; }
-      .feed { border-right: none; }
+      .feed { max-width: 100%; border-right: none; }
       .mobile-header {
         display: block;
         background: #fff;
