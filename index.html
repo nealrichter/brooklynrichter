@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brooklyn Richter</title>
+  <style>
+    :root {
+      --orange: #F05423;
+      --dark: #231F20;
+      --light: #f7f7f7;
+      --border: #e6e6e6;
+      --muted: #888;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--light); color: var(--dark); }
+
+    /* Layout */
+    .layout { display: flex; max-width: 990px; margin: 0 auto; min-height: 100vh; }
+
+    /* Left sidebar */
+    .sidebar { width: 260px; padding: 1.5rem 1rem; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 1.5rem; border-right: 1px solid var(--border); }
+    .sidebar .logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .sidebar .logo img { height: 48px; }
+    .sidebar .logo span { font-size: 1.2rem; font-weight: 700; color: var(--dark); }
+    .profile { display: flex; flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+    .avatar { width: 56px; height: 56px; border-radius: 50%; background: var(--orange); color: #fff; font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .profile-name { font-weight: 700; font-size: 1rem; }
+    .profile-sub { font-size: 0.85rem; color: var(--muted); }
+    .sidebar-footer img { height: 36px; opacity: 0.7; }
+    .bio { font-size: 0.85rem; line-height: 1.6; }
+    .bio-row { margin-bottom: 0.25rem; }
+    .bio-label { font-weight: 700; color: var(--orange); margin-right: 0.3rem; }
+    .bio-section-title { font-weight: 700; margin: 0.75rem 0 0.4rem; font-size: 0.88rem; }
+    .bio-note { font-weight: 400; color: var(--muted); }
+    .bio-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; margin-bottom: 0.5rem; }
+    .stat { background: var(--light); border-radius: 6px; padding: 0.4rem 0.5rem; text-align: center; }
+    .stat-val { display: block; font-weight: 700; font-size: 1rem; color: var(--orange); }
+    .stat-lbl { font-size: 0.75rem; color: var(--muted); }
+    .bio-note-full { font-size: 0.8rem; color: var(--muted); font-style: italic; }
+
+    /* Feed */
+    .feed { flex: 1; max-width: 600px; border-right: 1px solid var(--border); }
+    .feed-header { padding: 1rem 1.25rem; font-size: 1.1rem; font-weight: 700; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(247,247,247,0.9); backdrop-filter: blur(8px); }
+
+    /* Post */
+    .post { display: flex; gap: 0.75rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+    .post:hover { background: #f0f0f0; }
+    .post-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--orange); color: #fff; font-size: 1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .post-body { flex: 1; min-width: 0; }
+    .post-meta { display: flex; align-items: baseline; gap: 0.4rem; margin-bottom: 0.25rem; }
+    .post-author { font-weight: 700; font-size: 0.95rem; }
+    .post-date { font-size: 0.82rem; color: var(--muted); }
+    .post-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.2rem; }
+    .post-text { font-size: 0.95rem; line-height: 1.5; color: #333; }
+    .post-link { display: inline-block; margin-top: 0.6rem; font-size: 0.88rem; color: var(--orange); text-decoration: none; border: 1px solid var(--border); border-radius: 12px; padding: 0.3rem 0.75rem; margin-right: 0.4rem; }
+    .post-link:hover { background: var(--orange); color: #fff; border-color: var(--orange); }
+    .video-link { border-color: #c00; color: #c00; }
+    .video-link:hover { background: #c00; border-color: #c00; color: #fff; }
+
+    #loading { padding: 2rem 1.25rem; color: var(--muted); }
+    .post-text img { max-width: 100%; border-radius: 8px; margin-top: 0.5rem; }
+
+    @media (max-width: 640px) {
+      .sidebar { display: none; }
+      .feed { border-right: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <nav class="sidebar">
+      <a class="logo" href="#">
+        <img src="murray_spartans_logo.png" alt="Murray Spartans">
+        <span>Spartans</span>
+      </a>
+      <div class="profile">
+        <div class="avatar">BR</div>
+        <div class="profile-name">Brooklyn Richter</div>
+        <div class="profile-sub">Murray High School</div>
+      </div>
+      <div class="bio">
+        <div class="bio-row"><span class="bio-label">School:</span> <a href="https://www.instagram.com/murraygirlsbasketball/" target="_blank" rel="noopener">Murray High Girls Basketball</a> · <a href="https://www.maxpreps.com/ut/murray/murray-spartans/basketball/girls/" target="_blank" rel="noopener">MaxPreps</a></div>
+        <div class="bio-row"><span class="bio-label">EYBL Team:</span> <a href="https://www.instagram.com/lasvegasstormhoops/" target="_blank" rel="noopener">Las Vegas Storm</a></div>
+        <div class="bio-row"><span class="bio-label">GPA:</span> 3.98 / 4.0</div>
+        <div class="bio-row"><span class="bio-label">ACT:</span> 28</div>
+        <div class="bio-row"><a href="https://sports.deseret.com/high-school/girls-basketball/athlete/brooklyn-richter/328858" target="_blank" rel="noopener">Deseret News Profile</a></div>
+        <div class="bio-section-title">2025–26 Stats <span class="bio-note">(8 games)</span></div>
+        <div class="bio-stats">
+          <div class="stat"><span class="stat-val">15.5</span><span class="stat-lbl">PPG</span></div>
+          <div class="stat"><span class="stat-val">9.0</span><span class="stat-lbl">RPG</span></div>
+          <div class="stat"><span class="stat-val">1.5</span><span class="stat-lbl">BLK</span></div>
+          <div class="stat"><span class="stat-val">46%</span><span class="stat-lbl">FG</span></div>
+        </div>
+        <div class="bio-note-full">Season shortened by a toe fracture (fully healed).</div>
+      </div>
+      <div class="sidebar-footer">
+        <img src="murray_high_logo.png" alt="Murray High School">
+      </div>
+    </nav>
+
+    <main class="feed">
+      <div class="feed-header">Posts</div>
+      <div id="posts"><p id="loading">Loading...</p></div>
+    </main>
+  </div>
+
+  <script>
+    const SHEET_ID = '1BpfE6ehYIZ3eE3-PwEDmitMd9iTGN8IqHsWlU2gJA8g';
+    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+
+    function parseCSV(text) {
+      // Tokenize respecting quoted multi-line fields
+      const rows = [];
+      let cur = '', inQ = false, fields = [];
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (ch === '"') {
+          if (inQ && text[i+1] === '"') { cur += '"'; i++; } // escaped quote
+          else inQ = !inQ;
+        } else if (ch === ',' && !inQ) {
+          fields.push(cur.replace(/[\r\n]+/g, ' ').trim()); cur = '';
+        } else if ((ch === '\n' || (ch === '\r' && text[i+1] === '\n')) && !inQ) {
+          if (ch === '\r') i++;
+          fields.push(cur.replace(/[\r\n]+/g, ' ').trim()); cur = '';
+          rows.push(fields); fields = [];
+        } else {
+          cur += ch;
+        }
+      }
+      if (cur || fields.length) { fields.push(cur.replace(/[\r\n]+/g, ' ').trim()); rows.push(fields); }
+
+      const keys = rows[0].map(k => k.trim());
+      return rows.slice(1)
+        .filter(r => r.some(v => v.trim() !== ''))
+        .map(r => Object.fromEntries(keys.map((k, i) => [k, (r[i] || '').trim()])))
+        .filter(p => p.datetime || p.post_text);
+    }
+
+    const TUMBLR_URL = `https://api.rss2json.com/v1/api.json?rss_url=https://brooklynrbasketball.tumblr.com/rss`;
+
+    function renderPosts(posts) {
+      document.getElementById('posts').innerHTML = posts.map(p => `
+        <article class="post">
+          <div class="post-avatar">BR</div>
+          <div class="post-body">
+            <div class="post-meta">
+              <span class="post-author">Brooklyn Richter</span>
+              <span class="post-date">· ${p.datetime}</span>
+            </div>
+            ${p.post_title ? `<div class="post-title">${p.post_title}</div>` : ''}
+            <div class="post-text">${p.post_text}</div>
+            ${p.post_link ? `<a class="post-link" href="${p.post_link}" target="_blank" rel="noopener">${p.link_text || p.post_link}</a>` : ''}
+            ${p.video_link ? `<a class="post-link video-link" href="${p.video_link}" target="_blank" rel="noopener">${p.video_link.includes('youtube') || p.video_link.includes('youtu.be') ? '▶ YouTube Game Video' : '▶ Hudl Game Video'}</a>` : ''}
+          </div>
+        </article>`).join('');
+    }
+
+    Promise.all([
+      fetch(CSV_URL).then(r => r.text()).then(text =>
+        parseCSV(text).map(p => ({ ...p, _ts: new Date(p.datetime).getTime() }))
+      ).catch(() => []),
+      fetch(TUMBLR_URL).then(r => r.json()).then(data =>
+        (data.items || []).map(item => ({
+          datetime: new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+          post_title: item.title,
+          post_text: item.description.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '').trim(),
+          post_link: item.link,
+          link_text: 'View on Tumblr',
+          _ts: new Date(item.pubDate).getTime()
+        }))
+      ).catch(() => [])
+    ]).then(([sheetPosts, tumblrPosts]) => {
+      const all = [...sheetPosts, ...tumblrPosts].sort((a, b) => b._ts - a._ts);
+      if (all.length === 0) {
+        document.getElementById('posts').innerHTML = '<p style="padding:1rem;color:#888">No posts found.</p>';
+      } else {
+        renderPosts(all);
+      }
+    });
+  </script>
+</body>
+</html>
