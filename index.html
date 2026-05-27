@@ -355,8 +355,8 @@
             </div>
             ${p.post_title ? `<div class="post-title">${p.post_title}</div>` : ''}
             <div class="post-text">${mdToHtml(p.post_text)}</div>
-            ${p.post_link ? `<a class="post-link" href="${p.post_link}" target="_blank" rel="noopener">${p.link_text || p.post_link}</a>` : ''}
-            ${p.video_link ? `<a class="post-link video-link" href="${p.video_link}" target="_blank" rel="noopener">${p.video_link.includes('youtube') || p.video_link.includes('youtu.be') ? '▶ YouTube Game Video' : '▶ Hudl Game Video'}</a>` : ''}
+            ${p.post_link ? `<a class="post-link" href="${p.post_link}">${p.link_text || p.post_link}</a>` : ''}
+            ${p.video_link ? `<a class="post-link video-link" href="${p.video_link}">${p.video_link.includes('youtube') || p.video_link.includes('youtu.be') ? '▶ YouTube Game Video' : '▶ Hudl Game Video'}</a>` : ''}
           </div>
         </article>`).join('');
     }
