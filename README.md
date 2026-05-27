@@ -53,6 +53,12 @@ Push to GitHub and enable **GitHub Pages** (Settings → Pages → Deploy from `
 
 [https://github.com/nealrichter/brooklynrichter](https://github.com/nealrichter/brooklynrichter)
 
+## Live Site
+
+- [brooklynrichter.com](https://brooklynrichter.com)
+- [llms.txt](https://brooklynrichter.com/llms.txt)
+- [robots.txt](https://brooklynrichter.com/robots.txt)
+
 ## Extracting YouTube Clips
 
 ```bash
