@@ -89,6 +89,8 @@
     .video-card .video-date .vid-icon { font-size: 1.4rem; vertical-align: middle; margin-right: 0.25rem; }
     .video-card .video-desc { font-size: 0.9rem; margin-bottom: 0.5rem; }
     .video-card iframe { width: 100%; aspect-ratio: 16/9; border: none; border-radius: 8px; }
+    .ig-badge { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; margin-bottom: 0.3rem; }
+    .ig-badge svg { width: 16px; height: 16px; }
 
     .mobile-footer { display: none; }
     .mobile-header { display: none; }
@@ -293,7 +295,7 @@
             const icon = isIG ? '📸' : type === 'LONG' ? '🎦' : '🎬';
             if (isIG) {
               const embedUrl = url.split('?')[0] + 'embed/';
-              embedHtml = `<iframe src="${embedUrl}" loading="lazy" scrolling="no" style="border:none;width:100%;aspect-ratio:4/5;border-radius:8px;overflow:hidden" allowfullscreen></iframe>`;
+              embedHtml = `<div class="ig-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg> Instagram</div><iframe src="${embedUrl}" loading="lazy" scrolling="no" style="border:none;width:100%;aspect-ratio:4/5;border-radius:8px;overflow:hidden" allowfullscreen></iframe>`;
             } else {
               const iframeSrc = url.replace('/watch', '/iframe');
               const poster = iframeSrc.replace('/iframe', '/thumbnails/thumbnail.jpg?time=&height=600');
@@ -359,7 +361,7 @@
             </div>
             ${p.post_title ? `<div class="post-title">${p.post_title}</div>` : ''}
             <div class="post-text">${mdToHtml(p.post_text)}</div>
-            ${p.post_link && p.post_link.includes('instagram.com') ? `<iframe src="${p.post_link.split('?')[0]}embed/" loading="lazy" scrolling="no" style="border:none;width:100%;aspect-ratio:4/5;border-radius:8px;overflow:hidden;margin-top:0.5rem" allowfullscreen></iframe>` : p.post_link ? `<a class="post-link" href="${p.post_link}">${p.link_text || p.post_link}</a>` : ''}
+            ${p.post_link && p.post_link.includes('instagram.com') ? `<div class="ig-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg> Instagram</div><iframe src="${p.post_link.split('?')[0]}embed/" loading="lazy" scrolling="no" style="border:none;width:100%;aspect-ratio:4/5;border-radius:8px;overflow:hidden" allowfullscreen></iframe>` : p.post_link ? `<a class="post-link" href="${p.post_link}">${p.link_text || p.post_link}</a>` : ''}
             ${p.video_link ? `<a class="post-link video-link" href="${p.video_link}">${p.video_link.includes('youtube') || p.video_link.includes('youtu.be') ? '▶ YouTube Game Video' : '▶ Hudl Game Video'}</a>` : ''}
           </div>
         </article>`).join('');
