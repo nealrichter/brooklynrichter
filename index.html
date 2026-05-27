@@ -28,7 +28,8 @@
     .avatar { width: 56px; height: 56px; border-radius: 50%; background: var(--orange); color: #fff; font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
     .profile-name { font-weight: 700; font-size: 1rem; }
     .profile-sub { font-size: 0.85rem; color: var(--muted); }
-    .sidebar-footer img { height: 36px; opacity: 0.7; }
+    .sidebar-footer { margin-top: auto; padding-top: 1rem; }
+    .sidebar-footer img { height: 72px; opacity: 0.85; display: block; }
     .bio { font-size: 0.85rem; line-height: 1.6; }
     .bio-row { margin-bottom: 0.25rem; }
     .bio-label { font-weight: 700; color: var(--orange); margin-right: 0.3rem; }
@@ -66,6 +67,8 @@
     /* Mobile header */
     .mobile-header { display: none; }
 
+    .mobile-footer { display: none; }
+
     @media (max-width: 640px) {
       .layout { flex-direction: column; }
       .sidebar { display: none; }
@@ -92,6 +95,14 @@
         gap: 0.4rem;
         margin: 0.5rem 0;
       }
+      .mobile-footer {
+        display: flex;
+        justify-content: center;
+        padding: 1.5rem;
+        border-top: 1px solid var(--border);
+        background: #fff;
+      }
+      .mobile-footer img { height: 64px; opacity: 0.85; }
     }
   </style>
 </head>
@@ -151,7 +162,9 @@
         <div class="bio-note-full">Season shortened by a toe fracture (fully healed).</div>
       </div>
       <div class="sidebar-footer">
-        <img src="murray_high_logo.png" alt="Murray High School">
+        <a href="https://mhs.murrayschools.org" target="_blank" rel="noopener">
+          <img src="murray_high_logo.png" alt="Murray High School">
+        </a>
       </div>
     </nav>
 
@@ -160,6 +173,11 @@
       <div id="posts"><p id="loading">Loading...</p></div>
     </main>
   </div>
+  <footer class="mobile-footer">
+    <a href="https://mhs.murrayschools.org" target="_blank" rel="noopener">
+      <img src="murray_high_logo.png" alt="Murray High School">
+    </a>
+  </footer>
 
   <script>
     const SHEET_ID = '1BpfE6ehYIZ3eE3-PwEDmitMd9iTGN8IqHsWlU2gJA8g';
