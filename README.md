@@ -52,3 +52,17 @@ Push to GitHub and enable **GitHub Pages** (Settings → Pages → Deploy from `
 ## Repository
 
 [https://github.com/nealrichter/brooklynrichter](https://github.com/nealrichter/brooklynrichter)
+
+## Extracting YouTube Clips
+
+```bash
+yt-dlp --download-sections "*START-END" --merge-output-format mp4 -o "clip_name.mp4" "URL"
+```
+
+## Merging MP4 Files
+
+```bash
+printf "file 'clip1.mp4'\nfile 'clip2.mp4'\nfile 'clip3.mp4'\n" > list.txt
+ffmpeg -f concat -safe 0 -i list.txt -c copy merged.mp4
+rm list.txt
+```
