@@ -285,17 +285,21 @@
       const rows = parseCSV(text).filter(r => r.video_link);
       document.getElementById('videos-list').innerHTML = rows.length
         ? rows.map(r => {
-            const iframeSrc = r.video_link.replace('/watch', '/iframe');
-            const poster = iframeSrc.replace('/iframe', '/thumbnails/thumbnail.jpg?time=&height=600');
+            let embedHtml;
+            const url = r.video_link;
+            if (url.includes('instagram.com')) {
+              const embedUrl = url.split('?')[0] + 'embed/';
+              embedHtml = `<iframe src="${embedUrl}" loading="lazy" style="border:none;width:100%;min-height:480px;border-radius:8px" allowfullscreen></iframe>`;
+            } else {
+              const iframeSrc = url.replace('/watch', '/iframe');
+              const poster = iframeSrc.replace('/iframe', '/thumbnails/thumbnail.jpg?time=&height=600');
+              embedHtml = `<div style="position:relative;padding-top:56.25%"><iframe src="${iframeSrc}?poster=${encodeURIComponent(poster)}" loading="lazy" style="border:none;position:absolute;top:0;left:0;height:100%;width:100%;border-radius:8px" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe></div>`;
+            }
             return `
           <div class="video-card">
             <div class="video-date">${r.datetime}</div>
             <div class="video-desc">${r.post_text || ''}</div>
-            <div style="position:relative;padding-top:56.25%">
-              <iframe src="${iframeSrc}?poster=${encodeURIComponent(poster)}" loading="lazy"
-                style="border:none;position:absolute;top:0;left:0;height:100%;width:100%;border-radius:8px"
-                allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
-            </div>
+            ${embedHtml}
           </div>`;
           }).join('')
         : '<p style="color:var(--muted)">No videos yet.</p>';
