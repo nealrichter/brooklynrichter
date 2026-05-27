@@ -64,8 +64,22 @@
     #loading { padding: 2rem 1.25rem; color: var(--muted); }
     .post-text img { max-width: 100%; border-radius: 8px; margin-top: 0.5rem; }
 
-    /* Mobile header */
-    .mobile-header { display: none; }
+    /* Tabs */
+    .feed-tabs { display: flex; border-bottom: 1px solid var(--border); }
+    .tab { flex: 1; text-align: center; padding: 0.85rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; color: var(--muted); border-bottom: 3px solid transparent; }
+    .tab.active { color: var(--dark); border-bottom-color: var(--orange); }
+    .tab:hover { background: #f0f0f0; }
+
+    /* Stats panel */
+    #stats-panel { display: none; padding: 1rem 1.25rem; }
+    #stats-panel.visible { display: block; }
+    .stats-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 0.75rem; }
+    .stats-table th { background: var(--orange); color: #fff; padding: 0.4rem 0.5rem; text-align: center; font-weight: 600; }
+    .stats-table td { padding: 0.4rem 0.5rem; text-align: center; border-bottom: 1px solid var(--border); }
+    .stats-table tr:last-child td { border-bottom: none; }
+    .stats-table tr:hover td { background: #f0f0f0; }
+    .stats-table td:first-child, .stats-table th:first-child { text-align: left; }
+    .stats-source { font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; }
 
     .mobile-footer { display: none; }
 
@@ -169,8 +183,28 @@
     </nav>
 
     <main class="feed">
-      <div class="feed-header">Posts</div>
+      <div class="feed-tabs">
+        <div class="tab active" id="tab-posts" onclick="showTab('posts')">Posts</div>
+        <div class="tab" id="tab-stats" onclick="showTab('stats')">Stats</div>
+      </div>
       <div id="posts"><p id="loading">Loading...</p></div>
+      <div id="stats-panel">
+        <h3 style="font-size:1rem;margin-bottom:0.5rem">Basketball Career Stats</h3>
+        <div style="overflow-x:auto">
+          <table class="stats-table">
+            <thead>
+              <tr><th>Season</th><th>GP</th><th>PPG</th><th>RPG</th><th>APG</th><th>SPG</th><th>BPG</th><th>TPG</th><th>PFPG</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Jr. 25-26</td><td>8</td><td>15.5</td><td>9.1</td><td>0.3</td><td>1.1</td><td>1.5</td><td>1.0</td><td>1.6</td></tr>
+              <tr><td>So. 24-25</td><td>19</td><td>9.8</td><td>6.8</td><td>0.3</td><td>0.6</td><td>1.0</td><td>1.1</td><td>2.0</td></tr>
+              <tr><td>Fr. 23-24</td><td>15</td><td>2.7</td><td>2.6</td><td>0.1</td><td>0.2</td><td>0.4</td><td>1.1</td><td>1.7</td></tr>
+              <tr style="font-weight:700;background:#fef3ee"><td>Career</td><td>42</td><td>9.3</td><td>6.8</td><td>0.3</td><td>0.6</td><td>1.0</td><td>—</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="stats-source">Source: <a href="https://www.maxpreps.com/ut/murray/murray-spartans/athletes/brooklyn-richter/basketball/girls/stats/?careerid=bcigo8piedok4" target="_blank" rel="noopener">MaxPreps</a> · Last updated Feb 24, 2026</p>
+      </div>
     </main>
   </div>
   <footer class="mobile-footer">
@@ -180,6 +214,13 @@
   </footer>
 
   <script>
+    function showTab(tab) {
+      document.getElementById('posts').style.display = tab === 'posts' ? '' : 'none';
+      document.getElementById('stats-panel').classList.toggle('visible', tab === 'stats');
+      document.getElementById('tab-posts').classList.toggle('active', tab === 'posts');
+      document.getElementById('tab-stats').classList.toggle('active', tab === 'stats');
+    }
+
     const SHEET_ID = '1BpfE6ehYIZ3eE3-PwEDmitMd9iTGN8IqHsWlU2gJA8g';
     const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
 
