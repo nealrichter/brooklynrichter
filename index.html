@@ -189,8 +189,12 @@
       <div class="feed-tabs">
         <div class="tab active" id="tab-posts" onclick="showTab('posts')">Posts</div>
         <div class="tab" id="tab-stats" onclick="showTab('stats')">Stats</div>
+        <div class="tab" id="tab-videos" onclick="showTab('videos')">Videos</div>
       </div>
       <div id="posts"><p id="loading">Loading...</p></div>
+      <div id="videos-panel" style="display:none;padding:1rem 1.25rem">
+        <p style="color:var(--muted);font-size:0.9rem">Videos coming soon.</p>
+      </div>
       <div id="stats-panel">
         <h3 style="font-size:1rem;margin-bottom:0.25rem">Nike EYBL Champions League</h3>
         <div style="font-size:0.85rem;color:var(--muted);margin-bottom:0.5rem">Las Vegas Storm 17 EYCL</div>
@@ -256,11 +260,14 @@
     function showTab(tab) {
       document.getElementById('posts').style.display = tab === 'posts' ? '' : 'none';
       document.getElementById('stats-panel').classList.toggle('visible', tab === 'stats');
+      document.getElementById('videos-panel').style.display = tab === 'videos' ? '' : 'none';
       document.getElementById('tab-posts').classList.toggle('active', tab === 'posts');
       document.getElementById('tab-stats').classList.toggle('active', tab === 'stats');
-      history.replaceState(null, '', tab === 'stats' ? '#stats' : '#posts');
+      document.getElementById('tab-videos').classList.toggle('active', tab === 'videos');
+      history.replaceState(null, '', '#' + tab);
     }
     if (location.hash === '#stats') showTab('stats');
+    else if (location.hash === '#videos') showTab('videos');
     else showTab('posts');
 
     const SHEET_ID = '1BpfE6ehYIZ3eE3-PwEDmitMd9iTGN8IqHsWlU2gJA8g';
