@@ -282,7 +282,7 @@
 
     // Load videos
     fetch(VIDEOS_URL).then(r => r.text()).then(text => {
-      const rows = parseCSV(text).filter(r => r.video_link);
+      const rows = parseCSV(text).filter(r => r.video_link).sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
       document.getElementById('videos-list').innerHTML = rows.length
         ? rows.map(r => {
             let embedHtml;
