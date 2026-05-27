@@ -289,7 +289,7 @@
             const url = r.video_link;
             if (url.includes('instagram.com')) {
               const embedUrl = url.split('?')[0] + 'embed/';
-              embedHtml = `<iframe src="${embedUrl}" loading="lazy" style="border:none;width:100%;min-height:480px;border-radius:8px" allowfullscreen></iframe>`;
+              embedHtml = `<iframe src="${embedUrl}" loading="lazy" style="border:none;width:100%;aspect-ratio:4/5;border-radius:8px" allowfullscreen></iframe>`;
             } else {
               const iframeSrc = url.replace('/watch', '/iframe');
               const poster = iframeSrc.replace('/iframe', '/thumbnails/thumbnail.jpg?time=&height=600');
