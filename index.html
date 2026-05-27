@@ -25,7 +25,8 @@
     .sidebar .logo img { height: 48px; }
     .sidebar .logo span { font-size: 1.2rem; font-weight: 700; color: var(--dark); }
     .profile { display: flex; flex-direction: column; align-items: flex-start; gap: 0.25rem; }
-    .avatar { width: 56px; height: 56px; border-radius: 50%; background: var(--orange); color: #fff; font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .avatar { width: 56px; height: 56px; border-radius: 50%; overflow: hidden; }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
     .profile-name { font-weight: 700; font-size: 1rem; }
     .profile-sub { font-size: 0.85rem; color: var(--muted); }
     .sidebar-footer { margin-top: auto; padding-top: 1rem; }
@@ -49,7 +50,8 @@
     /* Post */
     .post { display: flex; gap: 0.75rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
     .post:hover { background: #f0f0f0; }
-    .post-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--orange); color: #fff; font-size: 1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .post-avatar { width: 42px; height: 42px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
+    .post-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .post-body { flex: 1; min-width: 0; }
     .post-meta { display: flex; align-items: baseline; gap: 0.4rem; margin-bottom: 0.25rem; }
     .post-author { font-weight: 700; font-size: 0.95rem; }
@@ -160,7 +162,7 @@
         <span>Spartans</span>
       </a>
       <div class="profile">
-        <div class="avatar">BR</div>
+        <div class="avatar"><img src="BrooklynFace.png" alt="Brooklyn Richter"></div>
         <div class="profile-name">Brooklyn Richter</div>
         <div class="profile-sub">Murray High School</div>
       </div>
@@ -341,7 +343,7 @@
     function renderPosts(posts) {
       document.getElementById('posts').innerHTML = posts.map(p => `
         <article class="post">
-          <div class="post-avatar">BR</div>
+          <div class="post-avatar"><img src="BrooklynFace.png" alt="BR"></div>
           <div class="post-body">
             <div class="post-meta">
               <span class="post-author">Brooklyn Richter</span>
