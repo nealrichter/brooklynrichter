@@ -81,6 +81,12 @@
     .stats-table td:first-child, .stats-table th:first-child { text-align: left; }
     .stats-source { font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; }
 
+    /* Video cards */
+    .video-card { margin-bottom: 1.5rem; }
+    .video-card .video-date { font-size: 0.82rem; color: var(--muted); margin-bottom: 0.3rem; }
+    .video-card .video-desc { font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .video-card iframe { width: 100%; aspect-ratio: 16/9; border: none; border-radius: 8px; }
+
     .mobile-footer { display: none; }
     .mobile-header { display: none; }
 
@@ -193,7 +199,7 @@
       </div>
       <div id="posts"><p id="loading">Loading...</p></div>
       <div id="videos-panel" style="display:none;padding:1rem 1.25rem">
-        <p style="color:var(--muted);font-size:0.9rem">Videos coming soon.</p>
+        <div id="videos-list"><p style="color:var(--muted);font-size:0.9rem">Loading videos...</p></div>
       </div>
       <div id="stats-panel">
         <h3 style="font-size:1rem;margin-bottom:0.25rem">Nike EYBL Champions League</h3>
@@ -272,6 +278,22 @@
 
     const SHEET_ID = '1BpfE6ehYIZ3eE3-PwEDmitMd9iTGN8IqHsWlU2gJA8g';
     const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+    const VIDEOS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=public_videos`;
+
+    // Load videos
+    fetch(VIDEOS_URL).then(r => r.text()).then(text => {
+      const rows = parseCSV(text).filter(r => r.video_link);
+      document.getElementById('videos-list').innerHTML = rows.length
+        ? rows.map(r => `
+          <div class="video-card">
+            <div class="video-date">${r.datetime}</div>
+            <div class="video-desc">${r.post_text || ''}</div>
+            <iframe src="${r.video_link.replace('/watch','/iframe')}" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe>
+          </div>`).join('')
+        : '<p style="color:var(--muted)">No videos yet.</p>';
+    }).catch(() => {
+      document.getElementById('videos-list').innerHTML = '<p style="color:var(--muted)">Could not load videos.</p>';
+    });
 
     function parseCSV(text) {
       // Tokenize respecting quoted multi-line fields
