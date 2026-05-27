@@ -287,7 +287,10 @@
         ? rows.map(r => {
             let embedHtml;
             const url = r.video_link;
-            if (url.includes('instagram.com')) {
+            const type = (r.video_type || '').toUpperCase();
+            const isIG = url.includes('instagram.com');
+            const icon = isIG ? '📸' : type === 'LONG' ? '🎬' : '🎞️';
+            if (isIG) {
               const embedUrl = url.split('?')[0] + 'embed/';
               embedHtml = `<iframe src="${embedUrl}" loading="lazy" scrolling="no" style="border:none;width:100%;aspect-ratio:4/5;border-radius:8px;overflow:hidden" allowfullscreen></iframe>`;
             } else {
@@ -297,7 +300,7 @@
             }
             return `
           <div class="video-card">
-            <div class="video-date">${r.datetime}</div>
+            <div class="video-date">${icon} ${r.datetime}</div>
             <div class="video-desc">${r.post_text || ''}</div>
             ${embedHtml}
           </div>`;
