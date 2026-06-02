@@ -497,6 +497,7 @@
     document.getElementById('share-messenger').href = `https://www.facebook.com/dialog/send?link=${encodeURIComponent(pageUrl)}&app_id=0&redirect_uri=${encodeURIComponent(pageUrl)}`;
     popup.dataset.url = pageUrl;
     popup.dataset.text = shareText;
+    document.getElementById('share-yt').style.display = type === 'videos' ? '' : 'none';
     popup.classList.add('visible');
   }
   function closeSharePopup(e) {
