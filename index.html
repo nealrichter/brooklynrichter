@@ -64,6 +64,20 @@
     .video-link { border-color: #c00; color: #c00; }
     .video-link:hover { background: #c00; border-color: #c00; color: #fff; }
 
+    /* Share */
+    .share-toggle { display: none; }
+    .share-btn { cursor: pointer; opacity: 0.8; transition: opacity 0.2s; background: var(--orange); border-radius: 6px; padding: 4px; width: 28px; height: 28px; margin-left: auto; }
+    .share-btn:hover { opacity: 1; }
+    .share-btn img { width: 100%; height: 100%; border-radius: 4px; }
+    .sharing-active .share-btn { display: inline-block; }
+    .share-popup-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
+    .share-popup-overlay.visible { display: flex; }
+    .share-popup { background: #fff; border-radius: 12px; padding: 1.5rem; min-width: 280px; max-width: 90vw; }
+    .share-popup h3 { margin-bottom: 1rem; font-size: 1rem; }
+    .share-popup a, .share-popup button { display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.6rem 0.75rem; border: none; background: none; font-size: 0.95rem; cursor: pointer; border-radius: 8px; text-decoration: none; color: var(--dark); }
+    .share-popup a:hover, .share-popup button:hover { background: #f0f0f0; }
+    .share-popup .close-btn { margin-top: 0.75rem; text-align: center; font-size: 0.85rem; color: var(--muted); cursor: pointer; }
+
     #loading { padding: 2rem 1.25rem; color: var(--muted); }
     .post-text img { max-width: 100%; border-radius: 8px; margin-top: 0.5rem; }
 
@@ -274,11 +288,22 @@
       document.getElementById('tab-posts').classList.toggle('active', tab === 'posts');
       document.getElementById('tab-stats').classList.toggle('active', tab === 'stats');
       document.getElementById('tab-videos').classList.toggle('active', tab === 'videos');
-      history.replaceState(null, '', '#' + tab);
+      if (!location.hash.match(/^#(posts|videos)\.[a-f0-9]+$/)) {
+        history.replaceState(null, '', '#' + tab);
+      }
     }
     if (location.hash === '#stats') showTab('stats');
-    else if (location.hash === '#videos') showTab('videos');
+    else if (location.hash === '#videos' || location.hash.startsWith('#videos.')) showTab('videos');
     else showTab('posts');
+
+    // Store the original hash before any modifications
+    const _deepLink = location.hash;
+    if (_deepLink.match(/^#(posts|videos)\.[a-f0-9]+$/)) {
+      const meta = document.createElement('meta');
+      meta.name = 'robots';
+      meta.content = 'noindex, nofollow';
+      document.head.appendChild(meta);
+    }
 
     const SHEET_ID = '1BpfE6ehYIZ3eE3-PwEDmitMd9iTGN8IqHsWlU2gJA8g';
     const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
@@ -302,14 +327,16 @@
               const poster = iframeSrc.replace('/iframe', '/thumbnails/thumbnail.jpg?time=&height=600');
               embedHtml = `<div style="position:relative;padding-top:56.25%"><iframe src="${iframeSrc}?poster=${encodeURIComponent(poster)}" loading="lazy" style="border:none;position:absolute;top:0;left:0;height:100%;width:100%;border-radius:8px" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen></iframe></div>`;
             }
+            const vhash = postHash(r);
             return `
-          <div class="video-card">
-            <div class="video-date"><span class="vid-icon">${icon}</span> ${r.datetime}</div>
+          <div class="video-card" id="video-${vhash}">
+            <div class="video-date" style="display:flex;align-items:center"><span class="vid-icon">${icon}</span> ${r.datetime}<span class="share-btn" data-hash="${vhash}" data-type="videos" onclick="openSharePopup(this.closest('.video-card'))" style="margin-left:auto"><img src="https://www.freeiconspng.com/uploads/black-circle-social-media-share-icon-png-25.png" alt="Share"></span></div>
             <div class="video-desc">${r.post_text || ''}</div>
             ${embedHtml}
           </div>`;
           }).join('')
         : '<p style="color:var(--muted)">No videos yet.</p>';
+      showDeepLinkedPost();
     }).catch(() => {
       document.getElementById('videos-list').innerHTML = '<p style="color:var(--muted)">Could not load videos.</p>';
     });
@@ -342,6 +369,45 @@
         .filter(p => p.datetime || p.post_text);
     }
 
+    function postHash(p) {
+      const str = (p.datetime || '') + (p.post_title || '') + (p.post_text || '').slice(0, 60);
+      let h = 0;
+      for (let i = 0; i < str.length; i++) { h = ((h << 5) - h + str.charCodeAt(i)) | 0; }
+      return (h >>> 0).toString(16).slice(0, 8).padStart(8, '0');
+    }
+
+    function showDeepLinkedPost() {
+      const hash = _deepLink || location.hash;
+      const m = hash.match(/^#posts\.([a-f0-9]+)$/);
+      if (m) {
+        showTab('posts');
+        const el = document.getElementById('post-' + m[1]);
+        if (el && !document.getElementById('home-nav-posts')) {
+          document.querySelectorAll('#posts .post').forEach(p => p.style.display = 'none');
+          el.style.display = '';
+          const home = document.createElement('div');
+          home.id = 'home-nav-posts';
+          home.style.cssText = 'padding:0.75rem 1.25rem;border-bottom:1px solid var(--border)';
+          home.innerHTML = '<a href="#posts" onclick="location.hash=\'#posts\';location.reload();return false" style="font-size:0.9rem;color:var(--orange);text-decoration:none;font-weight:600">\u2190 All Posts</a>';
+          el.parentNode.insertBefore(home, el);
+        }
+      }
+      const mv = hash.match(/^#videos\.([a-f0-9]+)$/);
+      if (mv) {
+        showTab('videos');
+        const el = document.getElementById('video-' + mv[1]);
+        if (el && !document.getElementById('home-nav-videos')) {
+          document.querySelectorAll('#videos-list .video-card').forEach(v => v.style.display = 'none');
+          el.style.display = '';
+          const home = document.createElement('div');
+          home.id = 'home-nav-videos';
+          home.style.cssText = 'padding:0.75rem 0;border-bottom:1px solid var(--border);margin-bottom:1rem';
+          home.innerHTML = '<a href="#videos" onclick="location.hash=\'#videos\';location.reload();return false" style="font-size:0.9rem;color:var(--orange);text-decoration:none;font-weight:600">\u2190 All Videos</a>';
+          el.parentNode.insertBefore(home, el);
+        }
+      }
+    }
+
     function mdToHtml(text) {
       return text
         .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
@@ -352,20 +418,25 @@
     const TUMBLR_URL = `https://api.rss2json.com/v1/api.json?rss_url=https://brooklynrbasketball.tumblr.com/rss`;
 
     function renderPosts(posts) {
-      document.getElementById('posts').innerHTML = posts.map(p => `
-        <article class="post">
+      document.getElementById('posts').innerHTML = posts.map(p => {
+        const hash = postHash(p);
+        return `
+        <article class="post" id="post-${hash}">
           <div class="post-avatar">⚡</div>
           <div class="post-body">
             <div class="post-meta">
               <span class="post-author">Brooklyn Richter</span>
               <span class="post-date">· ${p.datetime}</span>
+              <span class="share-btn" data-hash="${hash}" onclick="openSharePopup(this.closest('.post'))"><img src="https://www.freeiconspng.com/uploads/black-circle-social-media-share-icon-png-25.png" alt="Share"></span>
             </div>
             ${p.post_title ? `<div class="post-title">${p.post_title}</div>` : ''}
             <div class="post-text">${mdToHtml(p.post_text)}</div>
             ${p.post_link && p.post_link.includes('instagram.com') ? `<div class="ig-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg> Instagram</div><iframe src="${p.post_link.split('?')[0]}embed/" loading="lazy" scrolling="no" style="border:none;width:100%;aspect-ratio:4/5;border-radius:8px;overflow:hidden" allowfullscreen></iframe>` : p.post_link ? `<a class="post-link" href="${p.post_link}">${p.link_text || p.post_link}</a>` : ''}
             ${p.video_link ? `<a class="post-link video-link" href="${p.video_link}">${p.video_link.includes('youtube') || p.video_link.includes('youtu.be') ? '▶ YouTube Game Video' : '▶ Hudl Game Video'}</a>` : ''}
           </div>
-        </article>`).join('');
+        </article>`;
+      }).join('');
+      showDeepLinkedPost();
     }
 
     Promise.all([
@@ -391,7 +462,54 @@
       }
     });
   </script>
+  <button class="share-toggle" onclick="toggleSharing()" title="Toggle share links">
+    <img src="https://www.freeiconspng.com/uploads/black-circle-social-media-share-icon-png-25.png" alt="Share">
+  </button>
+  <div class="share-popup-overlay" id="share-popup" onclick="closeSharePopup(event)">
+    <div class="share-popup">
+      <h3>Share this post</h3>
+      <a id="share-x" href="#" target="_blank" rel="noopener" onclick="document.getElementById('share-popup').classList.remove('visible')">🐦 Share on X / Twitter</a>
+      <a id="share-ig" href="https://www.instagram.com/" target="_blank" rel="noopener" onclick="document.getElementById('share-popup').classList.remove('visible')">📸 Share on Instagram</a>
+      <a id="share-yt" href="https://www.youtube.com/" target="_blank" rel="noopener" onclick="document.getElementById('share-popup').classList.remove('visible')">▶️ Share on YouTube</a>
+      <a id="share-messenger" href="#" target="_blank" rel="noopener" onclick="document.getElementById('share-popup').classList.remove('visible')">💬 Send via Messenger</a>
+      <button id="share-copy" onclick="copyShareLink();document.getElementById('share-popup').classList.remove('visible')">🔗 Copy Link</button>
+      <div class="close-btn" onclick="document.getElementById('share-popup').classList.remove('visible')">Cancel</div>
+    </div>
+  </div>
   <p style="text-align:center;font-size:0.72rem;color:#ccc;padding:1rem 0 0.5rem">Website by Dad · <a href="https://github.com/nealrichter/brooklynrichter" style="color:#ccc">GitHub</a></p>
+<!-- Google tag (gtag.js) -->
+<script>
+  let sharingActive = false;
+  function toggleSharing() {
+    sharingActive = !sharingActive;
+    document.body.classList.toggle('sharing-active', sharingActive);
+    document.querySelectorAll('.share-btn').forEach(el => el.style.display = sharingActive ? 'inline-block' : 'none');
+  }
+  function openSharePopup(postEl) {
+    const title = postEl.querySelector('.post-title')?.textContent || postEl.querySelector('.video-desc')?.textContent || postEl.querySelector('.post-text')?.textContent.slice(0, 80) || '';
+    const btn = postEl.querySelector('.share-btn');
+    const hash = btn.dataset.hash;
+    const type = btn.dataset.type || 'posts';
+    const pageUrl = window.location.origin + window.location.pathname + '#' + type + '.' + hash;
+    const shareText = `${title} — Brooklyn Richter`;
+    const popup = document.getElementById('share-popup');
+    document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(pageUrl)}`;
+    document.getElementById('share-messenger').href = `https://www.facebook.com/dialog/send?link=${encodeURIComponent(pageUrl)}&app_id=0&redirect_uri=${encodeURIComponent(pageUrl)}`;
+    popup.dataset.url = pageUrl;
+    popup.dataset.text = shareText;
+    popup.classList.add('visible');
+  }
+  function closeSharePopup(e) {
+    if (e.target === e.currentTarget) e.currentTarget.classList.remove('visible');
+  }
+  function copyShareLink() {
+    const url = document.getElementById('share-popup').dataset.url || window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      document.getElementById('share-copy').textContent = '✅ Copied!';
+      setTimeout(() => { document.getElementById('share-copy').textContent = '🔗 Copy Link'; }, 2000);
+    });
+  }
+</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YNJ15Q7BHG"></script>
 <script>
