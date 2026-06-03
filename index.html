@@ -501,11 +501,13 @@
     popup.dataset.url = pageUrl;
     popup.dataset.text = shareText;
     document.getElementById('share-yt').style.display = type === 'videos' ? '' : 'none';
-    // Show download link if video_link exists on post
-    const videoLink = postEl.querySelector('.video-link')?.href || postEl.querySelector('iframe')?.src || '';
+    // Show download/save link if video exists on post
+    const videoLink = postEl.querySelector('.video-link')?.href || '';
     const dlEl = document.getElementById('share-download');
-    if (videoLink && (videoLink.includes('.mp4') || videoLink.includes('/iframe'))) {
-      dlEl.href = videoLink.includes('.mp4') ? videoLink : videoLink.replace('/iframe', '/download');
+    if (videoLink) {
+      dlEl.href = videoLink;
+      dlEl.removeAttribute('download');
+      dlEl.target = '_blank';
       dlEl.style.display = '';
     } else {
       dlEl.style.display = 'none';
