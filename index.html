@@ -502,10 +502,10 @@
     popup.dataset.text = shareText;
     document.getElementById('share-yt').style.display = type === 'videos' ? '' : 'none';
     // Show download/save link if video exists on post
-    const videoLink = postEl.querySelector('.video-link')?.href || postEl.querySelector('iframe')?.src || '';
+    const videoLink = postEl.querySelector('.video-link')?.href || postEl.querySelector('iframe')?.getAttribute('src') || '';
     const dlEl = document.getElementById('share-download');
-    if (videoLink) {
-      dlEl.href = videoLink;
+    if (videoLink || type === 'videos') {
+      dlEl.href = videoLink || pageUrl;
       dlEl.removeAttribute('download');
       dlEl.target = '_blank';
       dlEl.style.display = '';
