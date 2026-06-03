@@ -502,7 +502,7 @@
     popup.dataset.text = shareText;
     document.getElementById('share-yt').style.display = type === 'videos' ? '' : 'none';
     // Show download/save link if video exists on post
-    const videoLink = postEl.querySelector('.video-link')?.href || '';
+    const videoLink = postEl.querySelector('.video-link')?.href || postEl.querySelector('iframe')?.src || '';
     const dlEl = document.getElementById('share-download');
     if (videoLink) {
       dlEl.href = videoLink;
