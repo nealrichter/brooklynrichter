@@ -293,6 +293,8 @@
       if (!location.hash.match(/^#(posts|videos)\.[a-f0-9]+$/)) {
         history.replaceState(null, '', '#' + tab);
       }
+      document.querySelector('.feed').scrollTop = 0;
+      window.scrollTo(0, 0);
     }
     if (location.hash === '#stats') showTab('stats');
     else if (location.hash === '#videos' || location.hash.startsWith('#videos.')) showTab('videos');
