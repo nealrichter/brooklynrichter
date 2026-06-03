@@ -469,7 +469,7 @@
     <div class="share-popup">
       <h3>Share this post</h3>
       <a id="share-x" href="#" target="_blank" rel="noopener" onclick="document.getElementById('share-popup').classList.remove('visible')">🐦 Share on X / Twitter</a>
-      <a id="share-ig" href="https://www.instagram.com/" target="_blank" rel="noopener" onclick="document.getElementById('share-popup').classList.remove('visible')">📸 Share on Instagram</a>
+      <a id="share-ig" href="#" onclick="nativeShare(); return false;">📸 Share (Instagram/More...)</a>
       <a id="share-yt" href="https://www.youtube.com/" target="_blank" rel="noopener" onclick="document.getElementById('share-popup').classList.remove('visible')">▶️ Share on YouTube</a>
       <a id="share-messenger" href="#" target="_blank" rel="noopener" onclick="document.getElementById('share-popup').classList.remove('visible')">💬 Send via Messenger</a>
       <button id="share-copy" onclick="copyShareLink();document.getElementById('share-popup').classList.remove('visible')">🔗 Copy Link</button>
@@ -509,6 +509,18 @@
       document.getElementById('share-copy').textContent = '✅ Copied!';
       setTimeout(() => { document.getElementById('share-copy').textContent = '🔗 Copy Link'; }, 2000);
     });
+  }
+  function nativeShare() {
+    const popup = document.getElementById('share-popup');
+    const url = popup.dataset.url || window.location.href;
+    const text = popup.dataset.text || '';
+    popup.classList.remove('visible');
+    if (navigator.share) {
+      navigator.share({ title: text, url: url }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(url);
+      alert('Link copied! Paste it in Instagram or any app.');
+    }
   }
 </script>
 <!-- Google tag (gtag.js) -->
