@@ -449,14 +449,24 @@
         parseCSV(text).map(p => ({ ...p, _ts: new Date(p.datetime).getTime() }))
       ).catch(() => []),
       fetch(TUMBLR_URL).then(r => r.json()).then(data =>
-        (data.items || []).map(item => ({
-          datetime: new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-          post_title: item.title,
-          post_text: item.description.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '').trim(),
-          post_link: item.link,
-          link_text: 'View on Tumblr',
-          _ts: new Date(item.pubDate).getTime()
-        }))
+        (data.items || []).map(item => {
+          const post = {
+            datetime: new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+            post_title: item.title,
+            post_text: item.description.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '').trim(),
+            post_link: item.link,
+            link_text: 'View on Tumblr',
+            _ts: new Date(item.pubDate).getTime()
+          };
+          // Override: treat the Tumblr "First Post!" as the season-opener post dated 11/15/2025
+          if (item.link.includes('817646873868369921')) {
+            post.datetime = '11/15/2025';
+            post.post_title = '2025-26 Season Starts Now!';
+            post.post_text = post.post_text.replace(/<p>\s*First Post!\s*<\/p>/i, '');
+            post._ts = new Date('11/15/2025').getTime();
+          }
+          return post;
+        })
       ).catch(() => [])
     ]).then(([sheetPosts, tumblrPosts]) => {
       const all = [...sheetPosts, ...tumblrPosts].sort((a, b) => b._ts - a._ts);
